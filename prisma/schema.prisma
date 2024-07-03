@@ -21,3 +21,8 @@ model Driver {
   password String? @db.VarChar(255)
   createdDT  DateTime
 }
+
+model Test {
+  id  Int  @id
+  full_name String? @db.VarChar(255)
+}

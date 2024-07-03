@@ -5,12 +5,14 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "postinstall": "^0.10.3",
     "prisma": "^5.16.1"
   },
   "devDependencies": {
