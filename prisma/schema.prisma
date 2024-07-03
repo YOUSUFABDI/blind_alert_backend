@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,11 +8,46 @@ datasource db {
 }
 
 model Driver {
-  id  Int  @id
-  full_name String? @db.VarChar(255)
-  number Int
-  email String? @db.VarChar(255)
-  password String? @db.VarChar(255)
-  createdDT  DateTime
+  id          Int      @id @default(autoincrement())
+  email       String   @db.VarChar(255)
+  password    String   @db.VarChar(255)
+  createdDT   DateTime @db.DateTime(0)
+  fullName    String   @db.VarChar(255)
+  phoneNumber String   @db.VarChar(255)
+  otps        Otp[]
+  Voice       Voice[]
+  Passenger   Passenger[]
 }
 
+model Otp {
+  id        Int      @id @default(autoincrement())
+  otp       Int
+  driverId  Int
+  status    String   @db.VarChar(255)
+  createdDT DateTime @db.DateTime(0)
+  driver    Driver   @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Otp Relation")
+
+  @@index([driverId], map: "Otp Relation")
+}
+
+model Voice {
+  id        Int      @id @default(autoincrement())
+  voice     String   @db.VarChar(255)
+  senderId  Int
+  receiver  Int
+  createdDT DateTime @db.Timestamp(0)
+  Driver    Driver   @relation(fields: [senderId], references: [id], onDelete: Cascade, map: "Voice Relation")
+
+  @@index([senderId], map: "Voice Relation")
+}
+
+model Passenger {
+  id           Int        @id @default(autoincrement())
+  fullName     String     @db.VarChar(255)
+  phoneNumber  String     @db.VarChar(255)
+  location     String     @db.VarChar(255)
+  driverId     Int
+  driver       Driver @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
+
+  @@index([driverId], map: "Passenger Relation")
+}
