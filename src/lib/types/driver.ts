@@ -1,10 +1,16 @@
 export type regDriverBodyDT = {
-  id: string
   fullName: string
   phoneNumber: string
   email: string
   password: string
-  createdDT: string
+}
+
+export type VerifyOtpDT = {
+  otp: number
+  fullName: string
+  phoneNumber: string
+  email: string
+  password: string
 }
 
 export type loginDriverBodyDT = {

@@ -2,6 +2,9 @@ import express, { NextFunction, Request, Response } from "express"
 import cors from "cors"
 import createHttpError, { isHttpError } from "http-errors"
 import driverRouter from "./routes/driverRoutes"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const app = express()
 
