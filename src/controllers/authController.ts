@@ -5,7 +5,7 @@ import {
   loginDriverBodyDT,
   regDriverBodyDT,
   VerifyOtpDT,
-} from "lib/types/driver"
+} from "lib/types/auth"
 import prisma from "../../prisma/client"
 import { generateOtp } from "../lib/utils/generateOtp"
 import { sendOtpEmail } from "../lib/utils/sendOtpEmail"
@@ -145,7 +145,7 @@ const loginDriver: RequestHandler<
       throw createHttpError(401, "Invalid email or password.")
     }
 
-    res.status(200).json({ message: "Login successful." })
+    res.status(200).json({ message: "Logged in successful." })
   } catch (error) {
     next(error)
   }

@@ -1,23 +1,10 @@
-export type regDriverBodyDT = {
+export type RegisterPassengerDT = {
   fullName: string
   phoneNumber: string
-  email: string
-  password: string
+  location: string
+  driverId: any
 }
 
-export type VerifyOtpDT = {
-  otp: number
-  fullName: string
+export type LoginPassengerDT = {
   phoneNumber: string
-  email: string
-  password: string
-}
-
-export type loginDriverBodyDT = {
-  email: string
-  password: string
-}
-
-export type GetMeDT = {
-  email: string
 }
