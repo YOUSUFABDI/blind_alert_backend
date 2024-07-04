@@ -13,13 +13,14 @@ export const sendOtpEmail = async (
     service: "gmail",
     host: process.env.EMAIL_HOST,
     port: 587,
+    secure: process.env.EMAIL_SECURE === "true", // true for 465, false for other ports
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    tls: {
-      rejectUnauthorized: false,
-    },
+    // tls: {
+    //   rejectUnauthorized: false,
+    // },
   })
 
   const mailOptions = {
