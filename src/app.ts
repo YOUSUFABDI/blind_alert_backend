@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express"
 import cors from "cors"
 import createHttpError, { isHttpError } from "http-errors"
-import driverRouter from "./routes/driverRoutes"
+import authRouter from "./routes/authRoutes"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -15,7 +15,8 @@ app.options("*", cors())
 app.get("/", (req, res) => {
   res.json({ message: "Wagwan!" })
 })
-app.use("/api/v1/driver", driverRouter)
+app.use("/api/v1/auth", authRouter)
+// app.use("/api/v1/driver", driverRouter)
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Enpoint not found!"))

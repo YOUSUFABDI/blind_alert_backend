@@ -17,3 +17,7 @@ export type loginDriverBodyDT = {
   email: string
   password: string
 }
+
+export type GetMeDT = {
+  email: string
+}

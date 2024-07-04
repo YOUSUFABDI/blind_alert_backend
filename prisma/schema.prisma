@@ -46,6 +46,7 @@ model Passenger {
   fullName    String @db.VarChar(255)
   phoneNumber String @db.VarChar(255)
   location    String @db.VarChar(255)
+  createdDT   DateTime    @db.DateTime(0)
   driverId    Int
   driver      Driver @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
 
