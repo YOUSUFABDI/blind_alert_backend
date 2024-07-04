@@ -3,8 +3,9 @@ import driverController from "../controllers/driverController"
 
 const router = exppress.Router()
 
-const { registerPassenger } = driverController
+const { registerPassenger, getMe } = driverController
 
 router.post("/register-passenger", registerPassenger)
+router.get("/get-me", getMe)
 
 export default router

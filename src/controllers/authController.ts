@@ -1,16 +1,11 @@
+import bcrypt from "bcryptjs"
+import dotenv from "dotenv"
 import { RequestHandler } from "express"
 import createHttpError from "http-errors"
-import {
-  GetMeDT,
-  loginDriverBodyDT,
-  regDriverBodyDT,
-  VerifyOtpDT,
-} from "lib/types/auth"
+import { loginDriverBodyDT, regDriverBodyDT, VerifyOtpDT } from "lib/types/auth"
 import prisma from "../../prisma/client"
 import { generateOtp } from "../lib/utils/generateOtp"
 import { sendOtpEmail } from "../lib/utils/sendOtpEmail"
-import dotenv from "dotenv"
-import bcrypt from "bcryptjs"
 
 dotenv.config()
 
@@ -151,44 +146,4 @@ const loginDriver: RequestHandler<
   }
 }
 
-const getMe: RequestHandler<unknown, unknown, GetMeDT, unknown> = async (
-  req,
-  res,
-  next
-) => {
-  try {
-    const { email } = req.body
-    if (!email) {
-      throw createHttpError(400, "Email is required.")
-    }
-
-    const driver = await prisma.driver.findFirst({
-      where: { email: email },
-      include: {
-        Passenger: true,
-      },
-    })
-    if (!driver) {
-      throw createHttpError(404, "Driver not found.")
-    }
-
-    res.status(200).json({
-      id: driver.id,
-      fullName: driver.fullName,
-      phoneNumber: driver.phoneNumber,
-      email: driver.email,
-      createdDT: driver.createdDT,
-      passengers: driver.Passenger.map((passenger) => ({
-        id: passenger.id,
-        fullName: passenger.fullName,
-        phoneNumber: passenger.phoneNumber,
-        location: passenger.location,
-        createdDT: passenger.createdDT,
-      })),
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-export default { registerDriver, verifyOtpCode, loginDriver, getMe }
+export default { registerDriver, verifyOtpCode, loginDriver }

@@ -3,6 +3,7 @@ import { RequestHandler } from "express"
 import createHttpError from "http-errors"
 import prisma from "../../prisma/client"
 import { RegisterPassengerDT } from "../lib/types/driver"
+import { GetMeDT } from "lib/types/auth"
 
 dotenv.config()
 
@@ -49,4 +50,44 @@ const registerPassenger: RequestHandler<
   }
 }
 
-export default { registerPassenger }
+const getMe: RequestHandler<unknown, unknown, GetMeDT, unknown> = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { email } = req.body
+    if (!email) {
+      throw createHttpError(400, "Email is required.")
+    }
+
+    const driver = await prisma.driver.findFirst({
+      where: { email: email },
+      include: {
+        Passenger: true,
+      },
+    })
+    if (!driver) {
+      throw createHttpError(404, "Driver not found.")
+    }
+
+    res.status(200).json({
+      id: driver.id,
+      fullName: driver.fullName,
+      phoneNumber: driver.phoneNumber,
+      email: driver.email,
+      createdDT: driver.createdDT,
+      passengers: driver.Passenger.map((passenger) => ({
+        id: passenger.id,
+        fullName: passenger.fullName,
+        phoneNumber: passenger.phoneNumber,
+        location: passenger.location,
+        createdDT: passenger.createdDT,
+      })),
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export default { registerPassenger, getMe }
