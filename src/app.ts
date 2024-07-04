@@ -27,6 +27,7 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.log(error)
 
   if (isHttpError(error)) {
+    console.log(error)
     errorMessage = error.message
     statusCode = error.statusCode
   }

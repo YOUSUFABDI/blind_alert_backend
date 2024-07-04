@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Driver {
-  id          Int      @id @default(autoincrement())
-  email       String   @db.VarChar(255)
-  password    String   @db.VarChar(255)
-  createdDT   DateTime @db.DateTime(0)
-  fullName    String   @db.VarChar(255)
-  phoneNumber String   @db.VarChar(255)
+  id          Int         @id @default(autoincrement())
+  email       String      @db.VarChar(255)
+  password    String      @db.VarChar(255)
+  createdDT   DateTime    @db.DateTime(0)
+  fullName    String      @db.VarChar(255)
+  phoneNumber String      @db.VarChar(255)
   otps        Otp[]
-  Voice       Voice[]
   Passenger   Passenger[]
+  Voice       Voice[]
 }
 
 model Otp {
@@ -42,12 +42,12 @@ model Voice {
 }
 
 model Passenger {
-  id           Int        @id @default(autoincrement())
-  fullName     String     @db.VarChar(255)
-  phoneNumber  String     @db.VarChar(255)
-  location     String     @db.VarChar(255)
-  driverId     Int
-  driver       Driver @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
+  id          Int    @id @default(autoincrement())
+  fullName    String @db.VarChar(255)
+  phoneNumber String @db.VarChar(255)
+  location    String @db.VarChar(255)
+  driverId    Int
+  driver      Driver @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
 
   @@index([driverId], map: "Passenger Relation")
 }
