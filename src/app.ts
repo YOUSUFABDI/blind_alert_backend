@@ -3,6 +3,7 @@ import cors from "cors"
 import createHttpError, { isHttpError } from "http-errors"
 import authRouter from "./routes/authRoutes"
 import driverRouter from "./routes/driverRoutes"
+import passengerRouter from "./routes/passengerRoutes"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 })
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/driver", driverRouter)
+app.use("/api/v1/passenger", passengerRouter)
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Enpoint not found!"))
