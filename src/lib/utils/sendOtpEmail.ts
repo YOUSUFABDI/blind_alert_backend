@@ -23,7 +23,7 @@ export const sendOtpEmail = async (
   const mailOptions = {
     from: `"Blind Alert" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: "Your OTP Code",
+    subject: "Your OTP Code Don't Share With Any One.",
     text: `Your OTP code is ${otp}`,
   }
 
