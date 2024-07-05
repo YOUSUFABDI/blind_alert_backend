@@ -55,7 +55,7 @@ const registerDriver: RequestHandler<
       },
     })
 
-    res.status(201).json({ message: "OTP code sent to email." })
+    res.status(201).json({ message: `OTP code sent to ${email}` })
   } catch (error) {
     console.log(error)
     next(error)
