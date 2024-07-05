@@ -5,6 +5,6 @@ export type RegisterPassengerDT = {
   driverId: any
 }
 
-export type LoginPassengerDT = {
-  phoneNumber: string
+export type GetMeDT = {
+  email: string
 }

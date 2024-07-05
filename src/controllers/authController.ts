@@ -69,8 +69,8 @@ const verifyOtpCode: RequestHandler<
   unknown
 > = async (req, res, next) => {
   try {
-    const { fullName, phoneNumber, email, password, otp } = req.body
-    if (!email || !otp || !fullName || !phoneNumber || !password) {
+    const { email, otp } = req.body
+    if (!email || !otp) {
       throw createHttpError(400, "Some fields are missing.")
     }
 
@@ -90,15 +90,13 @@ const verifyOtpCode: RequestHandler<
       throw createHttpError(400, "Invalid OTP.")
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10)
-
     await prisma.driver.update({
       where: { id: existingOtp.driver.id },
       data: {
-        fullName,
-        phoneNumber,
-        email,
-        password: hashedPassword,
+        fullName: existingOtp.driver.fullName,
+        phoneNumber: existingOtp.driver.phoneNumber,
+        email: existingOtp.driver.email,
+        password: existingOtp.driver.password,
         createdDT: new Date(),
       },
     })

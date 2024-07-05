@@ -1,6 +1,6 @@
 import dotenv from "dotenv"
 import { RequestHandler } from "express"
-import { LoginPassengerDT } from "../lib/types/driver"
+import { LoginPassengerDT } from "../lib/types/passenger"
 import createHttpError from "http-errors"
 import prisma from "../../prisma/client"
 

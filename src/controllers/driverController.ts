@@ -3,7 +3,7 @@ import { RequestHandler } from "express"
 import createHttpError from "http-errors"
 import prisma from "../../prisma/client"
 import { RegisterPassengerDT } from "../lib/types/driver"
-import { GetMeDT } from "lib/types/auth"
+import { GetMeDT } from "lib/types/driver"
 
 dotenv.config()
 
