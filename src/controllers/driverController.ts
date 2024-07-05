@@ -14,12 +14,14 @@ const registerPassenger: RequestHandler<
   unknown
 > = async (req, res, next) => {
   try {
-    const { fullName, phoneNumber, location, driverId } = req.body
-    if (!fullName || !phoneNumber || !location || !driverId) {
+    const { fullName, phoneNumber, location, driverEmail } = req.body
+    if (!fullName || !phoneNumber || !location || !driverEmail) {
       throw new Error("All fields are required.")
     }
 
-    const driver = await prisma.driver.findUnique({ where: { id: driverId } })
+    const driver = await prisma.driver.findFirst({
+      where: { email: driverEmail },
+    })
     if (!driver) {
       throw createHttpError(400, "Driver not found.")
     }
@@ -39,7 +41,7 @@ const registerPassenger: RequestHandler<
         fullName,
         phoneNumber,
         location,
-        driverId,
+        driverId: driver.id,
         createdDT: new Date(),
       },
     })
