@@ -16,7 +16,7 @@ const registerPassenger: RequestHandler<
   try {
     const { fullName, phoneNumber, location, driverEmail } = req.body
     if (!fullName || !phoneNumber || !location || !driverEmail) {
-      throw new Error("All fields are required.")
+      throw createHttpError(400, "All fields are required.")
     }
 
     const driver = await prisma.driver.findFirst({
