@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 import { RequestHandler } from "express"
 import createHttpError from "http-errors"
 import prisma from "../../prisma/client"
-import { RegisterPassengerDT } from "../lib/types/driver"
+import { RegisterPassengerDT, SendVoiceDT } from "../lib/types/driver"
 import { GetMeDT } from "lib/types/driver"
 
 dotenv.config()
@@ -92,4 +92,93 @@ const getMe: RequestHandler<unknown, unknown, GetMeDT, unknown> = async (
   }
 }
 
-export default { registerPassenger, getMe }
+const getVoices: RequestHandler<
+  unknown,
+  unknown,
+  { email: string },
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { email } = req.body
+    if (!email) {
+      throw createHttpError(400, "Email is required.")
+    }
+
+    const driver = await prisma.driver.findFirst({
+      where: { email: email },
+      include: {
+        Voice: true,
+      },
+    })
+    if (!driver) {
+      throw createHttpError(404, "Driver not found.")
+    }
+
+    const passenger = await prisma.passenger.findFirst({
+      where: { driverId: driver.id },
+    })
+
+    res.status(200).json({
+      voices: driver.Voice.map((voice) => {
+        return {
+          voiceId: voice.id,
+          voice: voice.voice,
+          senderEmail: driver.email,
+          reciver: {
+            reciverId: passenger.id,
+            reciverFullName: passenger.fullName,
+            reciverPhoneNumber: passenger.phoneNumber,
+            reciverLocation: passenger.location,
+          },
+
+          createdDT: voice.createdDT,
+        }
+      }),
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const sendVoice: RequestHandler<
+  unknown,
+  unknown,
+  SendVoiceDT,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { senderEmail, receiverId, voiceBase64 } = req.body
+    if (!senderEmail || !receiverId || !voiceBase64) {
+      throw createHttpError(400, "All fields are required.")
+    }
+
+    const driver = await prisma.driver.findFirst({
+      where: { email: senderEmail },
+    })
+    if (!driver) {
+      throw createHttpError(404, "Driver not found.")
+    }
+
+    const receiver = await prisma.passenger.findUnique({
+      where: { id: receiverId },
+    })
+    if (!receiver) {
+      throw createHttpError(404, "Passenger not found.")
+    }
+
+    await prisma.voice.create({
+      data: {
+        voice: voiceBase64,
+        senderId: driver.id,
+        receiver: receiver.id,
+        createdDT: new Date(),
+      },
+    })
+
+    res.status(201).json({ message: "Voice sent successfully." })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export default { registerPassenger, getMe, getVoices, sendVoice }

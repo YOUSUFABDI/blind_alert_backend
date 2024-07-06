@@ -32,7 +32,7 @@ model Otp {
 
 model Voice {
   id        Int      @id @default(autoincrement())
-  voice     String   @db.VarChar(255)
+  voice     String   @db.LongText
   senderId  Int
   receiver  Int
   createdDT DateTime @db.Timestamp(0)
@@ -42,13 +42,13 @@ model Voice {
 }
 
 model Passenger {
-  id          Int    @id @default(autoincrement())
-  fullName    String @db.VarChar(255)
-  phoneNumber String @db.VarChar(255)
-  location    String @db.VarChar(255)
-  createdDT   DateTime    @db.DateTime(0)
+  id          Int      @id @default(autoincrement())
+  fullName    String   @db.VarChar(255)
+  phoneNumber String   @db.VarChar(255)
+  location    String   @db.VarChar(255)
+  createdDT   DateTime @db.DateTime(0)
   driverId    Int
-  driver      Driver @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
+  driver      Driver   @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
 
   @@index([driverId], map: "Passenger Relation")
 }

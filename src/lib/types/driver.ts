@@ -8,3 +8,9 @@ export type RegisterPassengerDT = {
 export type GetMeDT = {
   email: string
 }
+
+export type SendVoiceDT = {
+  senderEmail: string
+  receiverId: number
+  voiceBase64: string
+}
