@@ -25,7 +25,7 @@ const loginPassenger: RequestHandler<
       throw createHttpError(404, "Passenger not found.")
     }
 
-    res.status(200).json({ message: "Logged in successful." })
+    res.success("Logged in successful.")
   } catch (error) {
     next(error)
   }
@@ -50,7 +50,7 @@ const getMe: RequestHandler<
       throw createHttpError(404, "Passenger not found.")
     }
 
-    res.status(200).json({
+    res.success("", {
       id: passenger.id,
       fullName: passenger.fullName,
       phoneNumber: passenger.phoneNumber,
@@ -62,33 +62,4 @@ const getMe: RequestHandler<
   }
 }
 
-const getVoices: RequestHandler<
-  unknown,
-  unknown,
-  { passengerPhoneNo: string },
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { passengerPhoneNo } = req.body
-    if (!passengerPhoneNo) {
-      throw createHttpError(400, "Passenger email is required.")
-    }
-
-    const passenger = await prisma.passenger.findFirst({
-      where: { phoneNumber: passengerPhoneNo },
-    })
-    if (!passenger) {
-      throw createHttpError(404, "Passenger not found.")
-    }
-
-    const voices = await prisma.voice.findMany({
-      where: { receiver: passenger.id },
-    })
-
-    res.status(200).json(voices)
-  } catch (error) {
-    next(error)
-  }
-}
-
-export default { loginPassenger, getMe, getVoices }
+export default { loginPassenger, getMe }

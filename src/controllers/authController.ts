@@ -55,7 +55,7 @@ const registerDriver: RequestHandler<
       },
     })
 
-    res.status(201).json({ message: `OTP code sent to ${email}` })
+    res.success(`OTP code sent to ${email}`)
   } catch (error) {
     console.log(error)
     next(error)
@@ -106,7 +106,7 @@ const verifyOtpCode: RequestHandler<
       data: { status: "used" },
     })
 
-    res.status(201).json({ message: "Driver registered successfully." })
+    res.success("Driver registered successfully.")
   } catch (error) {
     next(error)
   }
@@ -138,7 +138,7 @@ const loginDriver: RequestHandler<
       throw createHttpError(401, "Invalid email or password.")
     }
 
-    res.status(200).json({ message: "Logged in successful." })
+    res.success("Logged in successfully.")
   } catch (error) {
     next(error)
   }

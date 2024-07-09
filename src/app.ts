@@ -5,15 +5,19 @@ import authRouter from "./routes/authRoutes"
 import driverRouter from "./routes/driverRoutes"
 import passengerRouter from "./routes/passengerRoutes"
 import dotenv from "dotenv"
+import responseHandler from "./middlewares/responseMiddleware"
 
 dotenv.config()
 
 const app = express()
 
 // Set limit to 4GB
-app.use(express.json({limit: "4000mb"}))
+app.use(express.json({ limit: "4000mb" }))
 app.use(cors())
 app.options("*", cors())
+
+// response handler middleware
+app.use(responseHandler)
 
 app.get("/", (req, res) => {
   res.json({ message: "Wagwan!" })
@@ -27,17 +31,12 @@ app.use((req, res, next) => {
 })
 
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
-  let errorMessage = "An unknown error occurred"
-  let statusCode = 500
   console.log(error)
-
   if (isHttpError(error)) {
-    console.log(error)
-    errorMessage = error.message
-    statusCode = error.statusCode
+    res.error(error.message, error.statusCode)
+  } else {
+    res.error("An unknown error occurred", 400)
   }
-
-  res.status(statusCode).json({ error: errorMessage })
 })
 
 export default app

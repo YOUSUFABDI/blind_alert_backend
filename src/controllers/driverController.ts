@@ -46,7 +46,7 @@ const registerPassenger: RequestHandler<
       },
     })
 
-    res.status(201).json({ message: "Passenger registered successfully." })
+    res.success("Passenger registered successfully.")
   } catch (error) {
     next(error)
   }
@@ -73,7 +73,7 @@ const getMe: RequestHandler<unknown, unknown, GetMeDT, unknown> = async (
       throw createHttpError(404, "Driver not found.")
     }
 
-    res.status(200).json({
+    res.success("", {
       id: driver.id,
       fullName: driver.fullName,
       phoneNumber: driver.phoneNumber,
@@ -118,7 +118,7 @@ const getVoices: RequestHandler<
       where: { driverId: driver.id },
     })
 
-    res.status(200).json({
+    res.success("", {
       voices: driver.Voice.map((voice) => {
         return {
           voiceId: voice.id,
@@ -175,7 +175,7 @@ const sendVoice: RequestHandler<
       },
     })
 
-    res.status(201).json({ message: "Voice sent successfully." })
+    res.success("Voice sent successfully.")
   } catch (error) {
     next(error)
   }

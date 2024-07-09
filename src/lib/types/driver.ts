@@ -12,5 +12,5 @@ export type GetMeDT = {
 export type SendVoiceDT = {
   senderEmail: string
   receiverId: number
-  voiceBase64: any
+  voiceBase64: string
 }
