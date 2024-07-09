@@ -31,12 +31,12 @@ model Otp {
 }
 
 model Voice {
-  id        Int      @id @default(autoincrement())
-  voice     String   @db.LongText
-  senderId  Int
-  receiver  Int
-  createdDT DateTime @db.Timestamp(0)
-  Driver    Driver   @relation(fields: [senderId], references: [id], onDelete: Cascade, map: "Voice Relation")
+  id          Int      @id @default(autoincrement())
+  voice       String   @db.LongText
+  senderId    Int
+  senderEmail String   @db.VarChar(255)
+  createdDT   DateTime @db.Timestamp(0)
+  Driver      Driver   @relation(fields: [senderId], references: [id], onDelete: Cascade, map: "Voice Relation")
 
   @@index([senderId], map: "Voice Relation")
 }
