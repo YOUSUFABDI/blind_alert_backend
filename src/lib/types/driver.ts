@@ -11,6 +11,16 @@ export type GetMeDT = {
 
 export type SendVoiceDT = {
   senderEmail: string
-  receiverId: number
   voiceBase64: string
+}
+
+export type SendNotificationDT = {
+  notification: {
+    title: string
+    body: string
+  }
+  data?: {
+    voiceBase64: string
+  }
+  tokens: string[]
 }

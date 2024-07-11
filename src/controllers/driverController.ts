@@ -1,9 +1,10 @@
 import dotenv from "dotenv"
 import { RequestHandler } from "express"
 import createHttpError from "http-errors"
+import { GetMeDT, SendNotificationDT } from "lib/types/driver"
 import prisma from "../../prisma/client"
 import { RegisterPassengerDT, SendVoiceDT } from "../lib/types/driver"
-import { GetMeDT } from "lib/types/driver"
+import { sendNotification } from "../lib/utils/sendNotification"
 
 dotenv.config()
 
@@ -73,7 +74,7 @@ const getMe: RequestHandler<unknown, unknown, GetMeDT, unknown> = async (
       throw createHttpError(404, "Driver not found.")
     }
 
-    res.success("", {
+    res.success(null, {
       id: driver.id,
       fullName: driver.fullName,
       phoneNumber: driver.phoneNumber,
@@ -107,29 +108,35 @@ const getVoices: RequestHandler<
     const driver = await prisma.driver.findFirst({
       where: { email: email },
       include: {
-        Voice: true,
+        Voice: {
+          orderBy: {
+            createdDT: "desc",
+          },
+        },
       },
     })
     if (!driver) {
       throw createHttpError(404, "Driver not found.")
     }
 
-    const passenger = await prisma.passenger.findFirst({
-      where: { driverId: driver.id },
-    })
+    // const passenger = await prisma.passenger.findFirst({
+    //   where: { driverId: driver.id },
+    // })
 
-    res.success("", {
+    res.success(null, {
       voices: driver.Voice.map((voice) => {
         return {
           voiceId: voice.id,
           voice: voice.voice,
           senderEmail: driver.email,
-          reciver: {
-            reciverId: passenger.id,
-            reciverFullName: passenger.fullName,
-            reciverPhoneNumber: passenger.phoneNumber,
-            reciverLocation: passenger.location,
-          },
+          // receiver: passenger
+          //   ? {
+          //       receiverId: passenger.id,
+          //       receiverFullName: passenger.fullName,
+          //       receiverPhoneNumber: passenger.phoneNumber,
+          //       receiverLocation: passenger.location,
+          //     }
+          //   : null,
 
           createdDT: voice.createdDT,
         }
@@ -147,33 +154,50 @@ const sendVoice: RequestHandler<
   unknown
 > = async (req, res, next) => {
   try {
-    const { senderEmail, receiverId, voiceBase64 } = req.body
-    if (!senderEmail || !receiverId || !voiceBase64) {
+    const { senderEmail, voiceBase64 } = req.body
+    if (!senderEmail || !voiceBase64) {
       throw createHttpError(400, "All fields are required.")
     }
 
     const driver = await prisma.driver.findFirst({
       where: { email: senderEmail },
+      include: {
+        Passenger: true,
+      },
     })
     if (!driver) {
       throw createHttpError(404, "Driver not found.")
-    }
-
-    const receiver = await prisma.passenger.findUnique({
-      where: { id: receiverId },
-    })
-    if (!receiver) {
-      throw createHttpError(404, "Passenger not found.")
     }
 
     await prisma.voice.create({
       data: {
         voice: voiceBase64,
         senderId: driver.id,
-        receiver: receiver.id,
+        senderEmail: driver.email,
         createdDT: new Date(),
       },
     })
+
+    // get all FCM tokens of the driver's passengers
+    const passengerTokens = await prisma.fcmTokens.findMany({
+      where: {
+        passengerId: { in: driver.Passenger.map((passenger) => passenger.id) },
+      },
+    })
+
+    const tokens = passengerTokens.map((token) => token.fcmToken)
+
+    const message: SendNotificationDT = {
+      notification: {
+        title: "New voice message",
+        body: "You have recieved a new voice message.",
+      },
+      // data: {
+      //   voiceBase64: voiceBase64,
+      // },
+      tokens,
+    }
+    await sendNotification(message)
 
     res.success("Voice sent successfully.")
   } catch (error) {

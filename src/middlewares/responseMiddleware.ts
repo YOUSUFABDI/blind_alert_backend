@@ -11,7 +11,10 @@ const responseHandler = (req: Request, res: Response, next: NextFunction) => {
   res.success = (message: string, payload: any = null) => {
     res.status(200).json({
       statusCode: 200,
-      payload: { message: message, data: payload },
+      payload: {
+        message: message,
+        data: payload,
+      },
       error: null,
     })
   }
@@ -20,7 +23,10 @@ const responseHandler = (req: Request, res: Response, next: NextFunction) => {
     res.status(400).json({
       statusCode: 400,
       payload: null,
-      error: { statusCode: 400, message },
+      error: {
+        statusCode: 400,
+        message: message,
+      },
     })
   }
 

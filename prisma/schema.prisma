@@ -47,8 +47,17 @@ model Passenger {
   phoneNumber String   @db.VarChar(255)
   location    String   @db.VarChar(255)
   createdDT   DateTime @db.DateTime(0)
+  FcmTokens   FcmTokens[]
   driverId    Int
   driver      Driver   @relation(fields: [driverId], references: [id], onDelete: Cascade, map: "Passenger Relation")
 
   @@index([driverId], map: "Passenger Relation")
+}
+
+model FcmTokens {
+  id             Int        @id @default(autoincrement())
+  fcmToken       String     @db.LongText
+  createdDT      DateTime   @db.DateTime(0)
+  passengerId    Int
+  passenger      Passenger  @relation(fields: [passengerId], references: [id], onDelete: Cascade, map: "Passenger FcmTokens")
 }
