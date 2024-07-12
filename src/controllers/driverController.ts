@@ -185,7 +185,6 @@ const sendVoice: RequestHandler<
       },
     })
     const tokens = passengerTokens.map((token) => token.fcmToken)
-    console.log(".........", tokens)
 
     const message: SendNotificationDT = {
       notification: {

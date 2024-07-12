@@ -1,9 +1,8 @@
 import dotenv from "dotenv"
 import { RequestHandler } from "express"
-import { LoginPassengerDT, SaveFcmTokenDT } from "../lib/types/passenger"
 import createHttpError from "http-errors"
 import prisma from "../../prisma/client"
-import { timeAgo } from "../lib/utils/timeAgo"
+import { LoginPassengerDT } from "../lib/types/passenger"
 
 dotenv.config()
 
