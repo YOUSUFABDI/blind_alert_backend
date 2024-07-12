@@ -12,4 +12,3 @@ admin.initializeApp({
 })
 
 export default admin
-// why

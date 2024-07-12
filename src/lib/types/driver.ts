@@ -16,7 +16,7 @@ export type SendVoiceDT = {
 
 export type SendNotificationDT = {
   notification: {
-    title: string
+    title?: string
     body: string
   }
   data?: {

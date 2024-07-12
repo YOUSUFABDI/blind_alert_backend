@@ -184,17 +184,14 @@ const sendVoice: RequestHandler<
         passengerId: { in: driver.Passenger.map((passenger) => passenger.id) },
       },
     })
-
     const tokens = passengerTokens.map((token) => token.fcmToken)
 
     const message: SendNotificationDT = {
       notification: {
-        title: "New voice message",
-        body: "You have recieved a new voice message.",
+        // title: "New voice message",
+        // body: "You have recieved a new voice message.",
+        body: "true",
       },
-      // data: {
-      //   voiceBase64: voiceBase64,
-      // },
       tokens,
     }
     await sendNotification(message)
