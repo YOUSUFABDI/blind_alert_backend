@@ -3,12 +3,10 @@ import passengerController from "../controllers/passengerController"
 
 const router = exppress.Router()
 
-const { loginPassenger, getMe, saveFcmToken, getLastVoice } =
-  passengerController
+const { loginPassenger, getMe, getLastVoice } = passengerController
 
 router.post("/login", loginPassenger)
-router.post("/get-me", getMe) //
-router.post("/get-last-voice", getLastVoice) //
-router.post("/save-fcm-token", saveFcmToken)
+router.post("/get-me", getMe)
+router.post("/get-last-voice", getLastVoice)
 
 export default router

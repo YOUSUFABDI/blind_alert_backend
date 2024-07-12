@@ -3,6 +3,7 @@ import { RequestHandler } from "express"
 import { LoginPassengerDT, SaveFcmTokenDT } from "../lib/types/passenger"
 import createHttpError from "http-errors"
 import prisma from "../../prisma/client"
+import { timeAgo } from "../lib/utils/timeAgo"
 
 dotenv.config()
 
@@ -87,44 +88,6 @@ const getMe: RequestHandler<
   }
 }
 
-const saveFcmToken: RequestHandler<
-  unknown,
-  unknown,
-  SaveFcmTokenDT,
-  unknown
-> = async (req, res, next) => {
-  try {
-    const { passengerPhoneNo, fcmToken } = req.body
-    if (!passengerPhoneNo || !fcmToken) {
-      throw createHttpError(400, "Phone number and FCM token are required.")
-    }
-
-    const passenger = await prisma.passenger.findFirst({
-      where: { phoneNumber: passengerPhoneNo },
-    })
-    if (!passenger) {
-      throw createHttpError(404, "Passenger not found.")
-    }
-
-    const existingToken = await prisma.fcmTokens.findFirst({
-      where: { passengerId: passenger.id, fcmToken: fcmToken },
-    })
-    if (!existingToken) {
-      await prisma.fcmTokens.create({
-        data: {
-          passengerId: passenger.id,
-          fcmToken: fcmToken,
-          createdDT: new Date(),
-        },
-      })
-    }
-
-    res.success("FCM token saved successfully.")
-  } catch (error) {
-    next(error)
-  }
-}
-
 const getLastVoice: RequestHandler<
   unknown,
   unknown,
@@ -144,7 +107,6 @@ const getLastVoice: RequestHandler<
           orderBy: {
             createdDT: "desc",
           },
-          take: 1,
         },
       },
     })
@@ -153,11 +115,15 @@ const getLastVoice: RequestHandler<
     }
 
     res.success(null, {
-      voices: driver.Voice[0],
+      id: driver.Voice[0].id,
+      voiceBase64: driver.Voice[0].voice,
+      senderEmail: driver.email,
+      senderPhoneNumber: driver.phoneNumber,
+      createdDT: driver.Voice[0].createdDT,
     })
   } catch (error) {
     next(error)
   }
 }
 
-export default { loginPassenger, getMe, saveFcmToken, getLastVoice }
+export default { loginPassenger, getMe, getLastVoice }
