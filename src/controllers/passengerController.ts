@@ -13,9 +13,9 @@ const loginPassenger: RequestHandler<
   unknown
 > = async (req, res, next) => {
   try {
-    const { phoneNumber } = req.body
-    if (!phoneNumber) {
-      throw createHttpError(400, "Phone number is required.")
+    const { phoneNumber, fcmToken } = req.body
+    if (!phoneNumber || !fcmToken) {
+      throw createHttpError(400, "Phone number and fcmToken is required.")
     }
 
     const passenger = await prisma.passenger.findFirst({
@@ -23,6 +23,27 @@ const loginPassenger: RequestHandler<
     })
     if (!passenger) {
       throw createHttpError(404, "Passenger not found.")
+    }
+
+    // save the fcm token
+    const existingFcmToken = await prisma.fcmTokens.findFirst({
+      where: { passengerId: passenger.id },
+    })
+    if (!existingFcmToken) {
+      await prisma.fcmTokens.create({
+        data: {
+          passengerId: passenger.id,
+          fcmToken: fcmToken,
+          createdDT: new Date(),
+        },
+      })
+    } else {
+      await prisma.fcmTokens.update({
+        where: { id: existingFcmToken.id },
+        data: {
+          fcmToken: fcmToken,
+        },
+      })
     }
 
     res.success("Logged in successful.")
