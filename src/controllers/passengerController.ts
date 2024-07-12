@@ -25,7 +25,7 @@ const loginPassenger: RequestHandler<
       throw createHttpError(404, "Passenger not found.")
     }
 
-    // save the fcm token
+    // save the fcm token.
     const existingFcmToken = await prisma.fcmTokens.findFirst({
       where: { passengerId: passenger.id },
     })
