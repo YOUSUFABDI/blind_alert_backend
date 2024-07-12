@@ -23,8 +23,8 @@ export const sendOtpEmail = async (
   const mailOptions = {
     from: `"Blind Alert" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: "Your OTP Code Don't Share With Any One.",
-    text: `Your OTP code is ${otp}`,
+    subject: "Your OTP Code",
+    text: `Your OTP code is ${otp} Don't Share With Any One.`,
   }
 
   await transporter.sendMail(mailOptions, (err, info) => {

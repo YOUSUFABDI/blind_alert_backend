@@ -5,7 +5,9 @@ import admin from "../../firebase"
 
 dotenv.config()
 
-export const sendNotification = async (message: SendNotificationDT) => {
+export const sendNotification = async (
+  message: SendNotificationDT
+): Promise<void> => {
   try {
     const response = await admin.messaging().sendMulticast(message)
     if (!response.successCount) {
