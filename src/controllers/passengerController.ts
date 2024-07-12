@@ -125,4 +125,39 @@ const saveFcmToken: RequestHandler<
   }
 }
 
-export default { loginPassenger, getMe, saveFcmToken }
+const getLastVoice: RequestHandler<
+  unknown,
+  unknown,
+  { email: string },
+  unknown
+> = async (req, res, next) => {
+  try {
+    const { email } = req.body
+    if (!email) {
+      throw createHttpError(400, "Email is required.")
+    }
+
+    const driver = await prisma.driver.findFirst({
+      where: { email: email },
+      include: {
+        Voice: {
+          orderBy: {
+            createdDT: "desc",
+          },
+          take: 1,
+        },
+      },
+    })
+    if (!driver) {
+      throw createHttpError(404, "Driver not found.")
+    }
+
+    res.success(null, {
+      voices: driver.Voice[0],
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export default { loginPassenger, getMe, saveFcmToken, getLastVoice }

@@ -6,8 +6,8 @@ const router = exppress.Router()
 const { registerPassenger, getMe, getVoices, sendVoice } = driverController
 
 router.post("/register-passenger", registerPassenger)
-router.get("/get-me", getMe)
-router.get("/get-voices", getVoices)
+router.post("/get-me", getMe) //
+router.post("/get-voices", getVoices) //
 router.post("/send-voice", sendVoice)
 
 export default router
