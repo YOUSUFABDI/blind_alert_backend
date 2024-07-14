@@ -168,6 +168,9 @@ const sendVoice: RequestHandler<
     if (!driver) {
       throw createHttpError(404, "Driver not found.")
     }
+    if (driver.Passenger.length === 0) {
+      throw createHttpError(400, "You don't have any passengers.")
+    }
 
     await prisma.voice.create({
       data: {
@@ -184,7 +187,14 @@ const sendVoice: RequestHandler<
         passengerId: { in: driver.Passenger.map((passenger) => passenger.id) },
       },
     })
-    const tokens = passengerTokens.map((token) => token.fcmToken)
+
+    // Filter out empty or invalid tokens
+    const tokens = passengerTokens
+      .map((token) => token.fcmToken)
+      .filter((token) => token)
+    if (tokens.length === 0) {
+      throw createHttpError(200, "Voice sent to active passangers.")
+    }
 
     const message: SendNotificationDT = {
       notification: {
