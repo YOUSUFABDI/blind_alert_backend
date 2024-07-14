@@ -188,15 +188,14 @@ const sendVoice: RequestHandler<
 
     const message: SendNotificationDT = {
       notification: {
-        // title: "New voice message",
-        // body: "You have recieved a new voice message.",
-        body: "true",
+        title: "Blind alert",
+        body: "You have recieved a new voice message.",
       },
       tokens,
     }
     await sendNotification(message)
 
-    res.success("Voice sent successfully.")
+    res.success("Voice sent and notification sent successfully.")
   } catch (error) {
     next(error)
   }

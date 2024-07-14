@@ -15,8 +15,6 @@ export const sendNotification = async (
         400,
         "The registration token is not a valid FCM registration token"
       )
-    } else {
-      throw createHttpError(200, "Successfully sent notification")
     }
   } catch (error) {
     console.log(error)
