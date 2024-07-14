@@ -201,6 +201,10 @@ const sendVoice: RequestHandler<
         title: "Blind alert",
         body: "You have recieved a new voice message.",
       },
+      data: {
+        title: "Blind alert",
+        body: "You have recieved a new voice message",
+      },
       tokens,
     }
     await sendNotification(message)

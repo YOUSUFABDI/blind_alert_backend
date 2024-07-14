@@ -20,7 +20,8 @@ export type SendNotificationDT = {
     body: string
   }
   data?: {
-    voiceBase64: string
+    title?: string
+    body: string
   }
   tokens: string[]
 }
