@@ -113,6 +113,10 @@ const getLastVoice: RequestHandler<
       throw createHttpError(404, "Driver not found.")
     }
 
+    if (!driver.Voice || driver.Voice.length === 0) {
+      throw createHttpError(404, "No voice message from your driver yet.")
+    }
+
     res.success(null, {
       id: driver.Voice[0].id,
       voiceBase64: driver.Voice[0].voice,
