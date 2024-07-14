@@ -114,7 +114,7 @@ const getLastVoice: RequestHandler<
     }
 
     if (!driver.Voice || driver.Voice.length === 0) {
-      throw createHttpError(404, "No voice message from your driver yet.")
+      throw createHttpError(400, "No voice message from your driver yet.")
     }
 
     res.success(null, {
